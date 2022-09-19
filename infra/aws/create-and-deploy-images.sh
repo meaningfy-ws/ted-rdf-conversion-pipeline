@@ -4,13 +4,21 @@ FUSEKI_IMAGE=docker.io/secoresearch/fuseki:4.5.0
 METABASE_IMAGE=docker.io/metabase/metabase:v0.43.4
 AIRFLOW_POSTGRES_IMAGE=docker.io/postgres:14.4-alpine
 REDIS_IMAGE=docker.io/redis:7.0.4-alpine3.16
+MONGO_EXPRESS_IMAGE=docker.io/mongo-express:0.54.0
 
 
 
 IMAGES_TO_BE_BUILD=(airflow digest_api metabase_postgres)
-IMAGES_FROM_DOCKER_HUB=(fuseki airflow_postgres metabase mongo redis)
+IMAGES_FROM_DOCKER_HUB=(fuseki airflow_postgres metabase mongo redis mongo_express)
 
+source .env
+export $(cat .env | xargs)
+cd ../../
+cp requirements.txt ./infra/airflow/
+cp requirements.txt ./infra/digest_api/digest_service/project_requirements.txt
+cp -r ted_sws ./infra/digest_api/
 make create-env-digest-api
+cd infra/aws
 touch .repositories_ids
 
 create_repository(){

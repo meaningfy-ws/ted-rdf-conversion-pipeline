@@ -12,6 +12,7 @@ services:
       AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "true"
       AIRFLOW__CORE__EXECUTOR: CeleryExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
@@ -27,7 +28,7 @@ services:
       driver: awslogs
       options:
         awslogs-group: /ecs/airflow-cluster-task
-        awslogs-region: eu-west-3
+        awslogs-region: ${REGION}
         awslogs-stream-prefix: ecs
     networks:
       ecs-local-network: null
@@ -55,6 +56,7 @@ services:
       AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+      AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "true"
       AIRFLOW__CORE__EXECUTOR: CeleryExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
@@ -67,7 +69,7 @@ services:
       driver: awslogs
       options:
         awslogs-group: /ecs/airflow-cluster-task
-        awslogs-region: eu-west-3
+        awslogs-region: ${REGION}
         awslogs-stream-prefix: ecs
     networks:
       ecs-local-network: null
@@ -91,7 +93,7 @@ services:
       driver: awslogs
       options:
         awslogs-group: /ecs/airflow-cluster-task
-        awslogs-region: eu-west-3
+        awslogs-region: ${REGION}
         awslogs-stream-prefix: ecs
     volumes:
       - airflow-postgres-db:/var/lib/postgresql/data
@@ -111,7 +113,7 @@ services:
       driver: awslogs
       options:
         awslogs-group: /ecs/airflow-cluster-task
-        awslogs-region: eu-west-3
+        awslogs-region: ${REGION}
         awslogs-stream-prefix: ecs
     networks:
       ecs-local-network: null
@@ -125,6 +127,7 @@ services:
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
       AIRFLOW__CORE__EXECUTOR: CeleryExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "true"
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW_GID: ${AIRFLOW_GID}
       AIRFLOW_HOME: /opt/airflow
@@ -145,7 +148,7 @@ services:
       driver: awslogs
       options:
         awslogs-group: /ecs/airflow-cluster-task
-        awslogs-region: eu-west-3
+        awslogs-region: ${REGION}
         awslogs-stream-prefix: ecs
     networks:
       ecs-local-network: null
@@ -163,6 +166,7 @@ services:
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
       AIRFLOW__CORE__EXECUTOR: CeleryExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "true"
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW_GID: ${AIRFLOW_GID}
       AIRFLOW_HOME: /opt/airflow/
@@ -180,7 +184,7 @@ services:
       driver: awslogs
       options:
         awslogs-group: /ecs/airflow-cluster-task
-        awslogs-region: eu-west-3
+        awslogs-region: ${REGION}
         awslogs-stream-prefix: ecs
     networks:
       ecs-local-network: null
@@ -198,6 +202,7 @@ services:
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
       AIRFLOW__CORE__EXECUTOR: CeleryExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "true"
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW_GID: ${AIRFLOW_GID}
       AIRFLOW_HOME: /opt/airflow
@@ -215,7 +220,7 @@ services:
       driver: awslogs
       options:
         awslogs-group: /ecs/airflow-cluster-task
-        awslogs-region: eu-west-3
+        awslogs-region: ${REGION}
         awslogs-stream-prefix: ecs
     networks:
       ecs-local-network: null
@@ -236,6 +241,7 @@ services:
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
       AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+      AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "true"
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW_GID: ${AIRFLOW_GID}
@@ -256,7 +262,7 @@ services:
       driver: awslogs
       options:
         awslogs-group: /ecs/airflow-cluster-task
-        awslogs-region: eu-west-3
+        awslogs-region: ${REGION}
         awslogs-stream-prefix: ecs
     networks:
       ecs-local-network: null
