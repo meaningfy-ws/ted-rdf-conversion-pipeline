@@ -1,5 +1,8 @@
 version: 1
 task_definition:
+  task_size:
+    mem_limit: 12288
+    cpu_limit: 3072
   efs_volumes:
     - name: metabase-postgres-db
       filesystem_id: ${METABASE_POSTGRES_DB_VOLUME_ID}
