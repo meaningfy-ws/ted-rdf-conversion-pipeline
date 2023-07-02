@@ -129,7 +129,7 @@ def test_s3_notice_rdf_publisher(notice_2016, fake_mongodb_client, notice_rdf_s3
     notice_repository = NoticeRepository(mongodb_client=fake_mongodb_client)
     notice_repository.add(notice)
     notice_id = notice.ted_id
-    object_name = f"{notice_id}{DEFAULT_TRANSFORMATION_FILE_EXTENSION}"
+    object_name = "test_package.zip"
 
     rdf_manifestation = RDFManifestation(object_data="dGhpcyBpcyBhIHRlc3QgUkRG")
     notice._status = NoticeStatus.VALIDATED
