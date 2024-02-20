@@ -53,7 +53,7 @@ class TedRequestAPI(RequestAPI):
             response_content = json.loads(response.text)
             return response_content
         else:
-            raise Exception(f"The TED-API call failed with: {response}")
+            raise Exception(f"The TED-API call failed with: {response}, the response body: {response.text}")
 
 
 class TedAPIAdapter(TedAPIAdapterABC):
