@@ -24,7 +24,7 @@ FINISH_FETCH_BY_DATE_TASK_ID = "finish_fetch_by_date"
 VALIDATE_FETCHED_NOTICES_TASK_ID = "validate_fetched_notices"
 
 
-@dag(default_args=DEFAULT_DAG_ARGUMENTS,
+@dag(default_args=DEFAULT_DAG_ARGUMENTS, schedule_interval=None,
      catchup=False, tags=['selector', 'daily-fetch'])
 def fetch_and_index_eforms_notices_by_date():
     @task
