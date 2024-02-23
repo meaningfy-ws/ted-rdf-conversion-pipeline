@@ -108,8 +108,14 @@ class NoticeFetcher(NoticeFetcherABC):
         :param query:
         :return:
         """
-        documents = self.ted_api_adapter.get_by_query(query=query)
-        return self._store_to_notice_repository(documents=documents)
+        #documents = self.ted_api_adapter.get_by_query(query=query)
+        documents = self.ted_api_adapter.get_by_query_generator(query=query)
+        notice_ids = set()
+        for document in documents:
+            notice_ids.add(document["ND"])
+            self.notice_repository.add(notice=self._create_notice(notice_data=document))
+        #return self._store_to_notice_repository(documents=documents)
+        return list(notice_ids)
 
     def fetch_notices_by_date_range(self, start_date: date, end_date: date) -> List[str]:
         """
