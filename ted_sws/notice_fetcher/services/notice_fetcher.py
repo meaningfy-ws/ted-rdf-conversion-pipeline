@@ -109,7 +109,7 @@ class NoticeFetcher(NoticeFetcherABC):
         :return:
         """
         #documents = self.ted_api_adapter.get_by_query(query=query)
-        documents = self.ted_api_adapter.get_by_query_generator(query=query)
+        documents = self.ted_api_adapter.get_generator_by_query(query=query)
         notice_ids = set()
         for document in documents:
             notice_ids.add(document["ND"])
