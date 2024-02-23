@@ -1,3 +1,4 @@
+from airflow import AirflowException
 from airflow.decorators import dag, task
 from pymongo import MongoClient
 
@@ -44,6 +45,7 @@ def fetch_and_index_eforms_notices_by_date():
         notice_ids = notice_fetcher_by_query_pipeline(query=query)
         if not notice_ids:
             log_error("No notices has been fetched!")
+            raise AirflowException("No notices has been")
         else:
             push_dag_downstream(key=NOTICE_IDS_KEY, value=notice_ids)
 
