@@ -38,10 +38,11 @@ def fetch_and_index_eforms_notices_by_date():
     def fetch_by_date_notice_from_ted():
 
         date_wildcard = get_dag_param(key=WILD_CARD_DAG_KEY)
-        query = f"""TD NOT IN (C E G I D P M Q O R 0 1 2 3 4 5 6 7 8 9 B S Y V F A H J K) AND 
-        notice-subtype IN (10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24) AND FT~"eforms-sdk-"  AND
-        PD={date_wildcard}
-        """
+        # query = f"""TD NOT IN (C E G I D P M Q O R 0 1 2 3 4 5 6 7 8 9 B S Y V F A H J K) AND
+        # notice-subtype IN (10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24) AND FT~"eforms-sdk-"  AND
+        # PD={date_wildcard}
+        # """
+        query = f"PD={date_wildcard}"
         notice_ids = notice_fetcher_by_query_pipeline(query=query)
         if not notice_ids:
             log_error("No notices has been fetched!")
