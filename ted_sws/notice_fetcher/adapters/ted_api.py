@@ -7,7 +7,7 @@ from typing import List, Generator
 import requests
 
 from ted_sws import config
-from ted_sws.event_manager.services.log import log_error
+from ted_sws.event_manager.services.log import log_error, log_warning
 from ted_sws.notice_fetcher.adapters.ted_api_abc import TedAPIAdapterABC, RequestAPI
 
 DOCUMENTS_PER_PAGE = 100
@@ -44,7 +44,9 @@ class TedRequestAPI(RequestAPI):
         response = requests.post(api_url, json=api_query)
         try_again_request_count = 0
         while response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
+            log_warning(f"Request return error: {response.status_code}")
             try_again_request_count += 1
+            log_warning(f"Sleep for : {try_again_request_count * 0.1} seconds")
             time.sleep(try_again_request_count * 0.1)
             response = requests.post(api_url, json=api_query)
             if try_again_request_count > 5:
@@ -53,7 +55,8 @@ class TedRequestAPI(RequestAPI):
             response_content = json.loads(response.text)
             return response_content
         else:
-            raise Exception(f"The TED-API call failed with: {response}, the response body: {response.text}")
+            raise Exception(
+                f"The TED-API call failed with: {response}, api query{api_query} the response body: {response.text}")
 
 
 class TedAPIAdapter(TedAPIAdapterABC):
