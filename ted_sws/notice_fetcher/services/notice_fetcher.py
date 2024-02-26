@@ -111,10 +111,21 @@ class NoticeFetcher(NoticeFetcherABC):
         #documents = self.ted_api_adapter.get_by_query(query=query)
         documents = self.ted_api_adapter.get_generator_by_query(query=query)
         notice_ids = set()
-        for document in documents:
-            notice_ids.add(document["ND"])
-            print(f"downloaded Notice: ", document["ND"])
-            self.notice_repository.add(notice=self._create_notice(notice_data=document))
+        while True:
+            try:
+                document = next(documents, None)
+
+                if document is None:
+                    break
+                notice_ids.add(document["ND"])
+                print(f"downloaded Notice: ", document["ND"])
+                self.notice_repository.add(notice=self._create_notice(notice_data=document))
+            except Exception as e:
+                print(e)
+        # for document in documents:
+        #     notice_ids.add(document["ND"])
+        #     print(f"downloaded Notice: ", document["ND"])
+        #     self.notice_repository.add(notice=self._create_notice(notice_data=document))
         #return self._store_to_notice_repository(documents=documents)
         return list(notice_ids)
 
