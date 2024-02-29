@@ -12,7 +12,7 @@ from ted_sws.data_sampler.services.notice_xml_indexer import index_eforms_notice
 from ted_sws.event_manager.adapters.event_log_decorator import event_log
 from ted_sws.event_manager.model.event_message import TechnicalEventMessage, EventMessageMetadata, \
     EventMessageProcessType
-from ted_sws.event_manager.services.log import log_error
+from ted_sws.event_manager.services.log import log_warning
 
 DAG_NAME = "fetch_notices_by_date"
 BATCH_SIZE = 2000
@@ -45,10 +45,9 @@ def fetch_and_index_eforms_notices_by_date():
 
         notice_ids = notice_fetcher_by_query_pipeline(query=query)
         if not notice_ids:
-            log_error("No notices has been fetched!")
-            raise AirflowException("No notices has been")
-        else:
-            push_dag_downstream(key=NOTICE_IDS_KEY, value=notice_ids)
+            log_warning("No notices has been fetched!")
+
+        push_dag_downstream(key=NOTICE_IDS_KEY, value=notice_ids)
 
     @task
     @event_log(TechnicalEventMessage(
