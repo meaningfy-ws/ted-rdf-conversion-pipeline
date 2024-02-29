@@ -43,11 +43,12 @@ class TedRequestAPI(RequestAPI):
 
         response = requests.post(api_url, json=api_query)
         try_again_request_count = 0
+        sleep_time = 0.5
         while response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
             log_warning(f"Request return error: {response.status_code}")
             try_again_request_count += 1
-            log_warning(f"Sleep for : {try_again_request_count * 0.1} seconds")
-            time.sleep(try_again_request_count * 0.1)
+            log_warning(f"Sleep for : {try_again_request_count * sleep_time} seconds")
+            time.sleep(try_again_request_count * sleep_time)
             response = requests.post(api_url, json=api_query)
             if try_again_request_count > 5:
                 break
