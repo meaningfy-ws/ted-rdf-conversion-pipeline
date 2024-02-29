@@ -18,6 +18,21 @@ def test_notice_fetcher_by_identifier(notice_repository, ted_document_search):
     assert notice.status == NoticeStatus.RAW
 
 
+def test_notice_fetcher_by_search_eforms_query(notice_repository, ted_document_search):
+    query = f""" TD NOT IN (C E G I D P M Q O R 0 1 2 3 4 5 6 7 8 9 B S Y V F A H J K) AND 
+            notice-subtype IN (10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24) AND FT~"eforms-sdk-"  AND
+            PD=20240223*
+            """
+    ted_api_query = {"query": query}
+
+    NoticeFetcher(notice_repository=notice_repository, ted_api_adapter=ted_document_search).fetch_notices_by_query(
+        query=ted_api_query)
+    notices = list(notice_repository.list())
+    assert isinstance(notices, list)
+    assert len(notices) > 1
+    assert isinstance(notices[0], Notice)
+
+
 def test_notice_fetcher_by_search_query(notice_repository, ted_document_search):
     query = {"query": "ND=67623-2022"}
 
