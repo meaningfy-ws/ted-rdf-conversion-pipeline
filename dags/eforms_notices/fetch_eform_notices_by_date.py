@@ -42,7 +42,7 @@ def fetch_and_index_eforms_notices_by_date():
         notice-subtype IN (10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24) AND FT~"eforms-sdk-"  AND
         PD={date_wildcard}
         """
-
+        print(f"START for date: {date_wildcard}")
         notice_ids = notice_fetcher_by_query_pipeline(query=query)
         if not notice_ids:
             log_warning("No notices has been fetched!")

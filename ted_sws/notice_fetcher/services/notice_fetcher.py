@@ -7,6 +7,7 @@ from ted_sws.core.model.metadata import TEDMetadata
 from ted_sws.core.model.notice import Notice
 from ted_sws.data_manager.adapters.repository_abc import NoticeRepositoryABC
 from ted_sws.notice_fetcher.adapters.ted_api_abc import TedAPIAdapterABC
+from ted_sws.notice_metadata_processor.services.metadata_normalizer import check_if_xml_manifestation_is_eform
 
 
 class NoticeFetcherABC(abc.ABC):
@@ -112,7 +113,11 @@ class NoticeFetcher(NoticeFetcherABC):
         notice_ids = set()
         for document in documents:
             notice_ids.add(document["ND"])
-            self.notice_repository.add(notice=self._create_notice(notice_data=document))
+            notice = self._create_notice(notice_data=document)
+            if check_if_xml_manifestation_is_eform(notice.xml_manifestation.object_data):
+                self.notice_repository.add(notice=notice)
+            else:
+                print(f"Notice [{notice.ted_id}] is standard form!")
         return list(notice_ids)
 
     def fetch_notices_by_date_range(self, start_date: date, end_date: date) -> List[str]:
