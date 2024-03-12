@@ -113,7 +113,7 @@ class NoticeFetcher(NoticeFetcherABC):
         notice_ids = set()
         for document in documents:
             notice = self._create_notice(notice_data=document)
-            if check_if_xml_manifestation_is_eform(notice.xml_manifestation.object_data):
+            if check_if_xml_manifestation_is_eform(notice.xml_manifestation):
                 notice_ids.add(document["ND"])
                 self.notice_repository.add(notice=notice)
             else:
