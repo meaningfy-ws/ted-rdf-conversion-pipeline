@@ -112,9 +112,9 @@ class NoticeFetcher(NoticeFetcherABC):
         documents = self.ted_api_adapter.get_generator_by_query(query=query)
         notice_ids = set()
         for document in documents:
-            notice_ids.add(document["ND"])
             notice = self._create_notice(notice_data=document)
             if check_if_xml_manifestation_is_eform(notice.xml_manifestation.object_data):
+                notice_ids.add(document["ND"])
                 self.notice_repository.add(notice=notice)
             else:
                 print(f"Notice [{notice.ted_id}] is standard form!")
