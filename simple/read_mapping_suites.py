@@ -9,6 +9,7 @@ from ted_sws.core.model.transform import MappingSuite, FileResource, Transformat
     MetadataConstraintsStandardForm, MetadataConstraintsEform
 from ted_sws.data_manager.adapters import inject_date_string_fields, remove_date_string_fields
 from ted_sws.data_manager.adapters.repository_abc import MappingSuiteRepositoryABC
+from line_profiler_pycharm import profile
 
 # Constants
 MS_METADATA_FILE_NAME = "metadata.json"
@@ -21,6 +22,7 @@ MS_SPARQL_FOLDER_NAME = "sparql"
 MS_TEST_DATA_FOLDER_NAME = "test_data"
 
 
+@profile
 def read_file_resources(path: pathlib.Path) -> List[FileResource]:
     if not path.exists():
         return []
@@ -30,7 +32,7 @@ def read_file_resources(path: pathlib.Path) -> List[FileResource]:
         FileResource(file_name=file.name, file_content=file.read_text(encoding="utf-8"), original_name=file.name)
         for file in files]
 
-
+@profile
 def read_flat_file_resources(path: pathlib.Path, extension=None, with_content=True) -> List[FileResource]:
     file_resources = []
     for root, dirs, files in os.walk(path):
@@ -45,7 +47,7 @@ def read_flat_file_resources(path: pathlib.Path, extension=None, with_content=Tr
             file_resources.append(file_resource)
     return file_resources
 
-
+@profile
 def read_transformation_rule_set(package_path: pathlib.Path) -> TransformationRuleSet:
     mappings_path = package_path / MS_TRANSFORM_FOLDER_NAME / MS_MAPPINGS_FOLDER_NAME
     resources_path = package_path / MS_TRANSFORM_FOLDER_NAME / MS_RESOURCES_FOLDER_NAME
@@ -53,7 +55,7 @@ def read_transformation_rule_set(package_path: pathlib.Path) -> TransformationRu
     rml_mapping_rules = read_file_resources(mappings_path)
     return TransformationRuleSet(resources=resources, rml_mapping_rules=rml_mapping_rules)
 
-
+@profile
 def read_shacl_test_suites(package_path: pathlib.Path) -> List[SHACLTestSuite]:
     shacl_path = package_path / MS_VALIDATE_FOLDER_NAME / MS_SHACL_FOLDER_NAME
     shacl_test_suite_paths = [x for x in shacl_path.iterdir() if x.is_dir()]
@@ -61,7 +63,7 @@ def read_shacl_test_suites(package_path: pathlib.Path) -> List[SHACLTestSuite]:
         SHACLTestSuite(identifier=shacl_test_suite_path.name, shacl_tests=read_file_resources(shacl_test_suite_path))
         for shacl_test_suite_path in shacl_test_suite_paths]
 
-
+@profile
 def read_sparql_test_suites(package_path: pathlib.Path) -> List[SPARQLTestSuite]:
     sparql_path = package_path / MS_VALIDATE_FOLDER_NAME / MS_SPARQL_FOLDER_NAME
     sparql_test_suite_paths = [x for x in sparql_path.iterdir() if x.is_dir()]
@@ -69,13 +71,13 @@ def read_sparql_test_suites(package_path: pathlib.Path) -> List[SPARQLTestSuite]
                             sparql_tests=read_file_resources(sparql_test_suite_path)) for sparql_test_suite_path in
             sparql_test_suite_paths]
 
-
+@profile
 def read_test_data_package(package_path: pathlib.Path) -> TransformationTestData:
     test_data_path = package_path / MS_TEST_DATA_FOLDER_NAME
     test_data = read_flat_file_resources(test_data_path)
     return TransformationTestData(test_data=test_data)
 
-
+@profile
 def read_package_metadata(package_path: pathlib.Path) -> dict:
     metadata_path = package_path / MS_METADATA_FILE_NAME
     if metadata_path.exists():
@@ -83,7 +85,7 @@ def read_package_metadata(package_path: pathlib.Path) -> dict:
             return json.load(file)
     return {}
 
-
+@profile
 def check_metadata_keys(metadata):
     required_keys = [
         'metadata_constraints',
@@ -98,6 +100,7 @@ def check_metadata_keys(metadata):
     return all(key in metadata and metadata[key] is not None for key in required_keys)
 
 
+@profile
 def read_mapping_suites(repository_path: pathlib.Path) -> List[MappingSuite]:
     return [
         MappingSuite(
