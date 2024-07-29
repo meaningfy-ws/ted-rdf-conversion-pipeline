@@ -43,21 +43,23 @@ def index_notice_xslt(notice: Notice, xslt_transformer=None) -> Notice:
     :return:
     """
 
-    with tempfile.NamedTemporaryFile() as fp:
+    xml_path = None
+    with tempfile.NamedTemporaryFile(delete=False) as fp:
         fp.write(notice.xml_manifestation.object_data.encode("utf-8"))
         xml_path = pathlib.Path(fp.name)
-        xslt_path = XSLT_FILES_PATH
-        xslt_path /= UNIQUE_XPATHS_XSLT_FILE_PATH
+    xslt_path = XSLT_FILES_PATH
+    xslt_path /= UNIQUE_XPATHS_XSLT_FILE_PATH
 
-        if xslt_transformer is None:
-            xslt_transformer = XMLPreprocessor()
-        result = xslt_transformer.transform_with_xslt_to_string(xml_path=xml_path,
-                                                                xslt_path=xslt_path)
-        xpaths = result[len(XSLT_PREFIX_RESULT):].split(",")
-        xml_metadata = XMLMetadata()
-        xml_metadata.unique_xpaths = xpaths
+    if xslt_transformer is None:
+        xslt_transformer = XMLPreprocessor()
+    result = xslt_transformer.transform_with_xslt_to_string(xml_path=xml_path,
+                                                            xslt_path=xslt_path)
+    os.unlink(xml_path)
+    xpaths = result[len(XSLT_PREFIX_RESULT):].split(",")
+    xml_metadata = XMLMetadata()
+    xml_metadata.unique_xpaths = xpaths
 
-        notice.set_xml_metadata(xml_metadata=xml_metadata)
+    notice.set_xml_metadata(xml_metadata=xml_metadata)
 
     return notice
 

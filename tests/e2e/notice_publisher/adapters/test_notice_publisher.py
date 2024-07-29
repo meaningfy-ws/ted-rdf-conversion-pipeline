@@ -1,3 +1,4 @@
+import os
 import tempfile
 
 import pytest
@@ -17,8 +18,10 @@ def test_sftp_notice_publisher():
     sftp_publisher.port = config.SFTP_PUBLISH_PORT
     sftp_publisher.connect()
 
-    source_file = tempfile.NamedTemporaryFile()
-    source_file.write(bytes("NOTICE", encoding='utf-8'))
+    source_file_path = None
+    with tempfile.NamedTemporaryFile(delete=False) as source_file:
+        source_file.write(bytes("NOTICE", encoding='utf-8'))
+        source_file_path = source_file.name
 
     invalid_remote_path = "/upload"
     remote_path = "/upload/sftp_notice.zip"
@@ -27,18 +30,19 @@ def test_sftp_notice_publisher():
         sftp_publisher.remove(remote_path)
 
     with pytest.raises(Exception):
-        sftp_publisher.publish(source_file.name + "invalid", invalid_remote_path)
+        sftp_publisher.publish(source_file_path + "invalid", invalid_remote_path)
 
     with pytest.raises(Exception):
-        sftp_publisher.publish(source_file.name, None)
+        sftp_publisher.publish(source_file_path, None)
 
     assert not sftp_publisher.exists(remote_path)
-    published = sftp_publisher.publish(source_file.name, remote_path)
+    published = sftp_publisher.publish(source_file_path, remote_path)
     assert published
     assert sftp_publisher.exists(remote_path)
     sftp_publisher.remove(remote_path)
     assert not sftp_publisher.exists(remote_path)
 
+    os.unlink(source_file_path)
     sftp_publisher.disconnect()
 
 

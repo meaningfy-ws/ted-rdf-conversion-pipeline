@@ -1,4 +1,5 @@
 import base64
+import os
 import pathlib
 import tempfile
 
@@ -31,16 +32,20 @@ def publish_notice(notice: Notice, publisher: SFTPPublisherABC = None,
 
     package_content = base64.b64decode(bytes(mets_manifestation.object_data, encoding='utf-8'), validate=True)
     remote_notice_path = f"{remote_folder_path}/{package_name}"
-    source_file = tempfile.NamedTemporaryFile()
-    source_file.write(package_content)
+    source_file_path = None
+    with tempfile.NamedTemporaryFile(delete=False) as source_file:
+        source_file.write(package_content)
+        source_file_path = source_file.name
     try:
         publisher.connect()
-        if publisher.publish(source_path=str(pathlib.Path(source_file.name)),
+        if publisher.publish(source_path=str(pathlib.Path(source_file_path)),
                              remote_path=remote_notice_path):
             notice.update_status_to(NoticeStatus.PUBLISHED)
         publisher.disconnect()
     except Exception as e:
         raise Exception(f"Notice {notice.ted_id} could not be published: " + str(e))
+    finally:
+        os.unlink(source_file_path)
 
     return notice.status == NoticeStatus.PUBLISHED
 
