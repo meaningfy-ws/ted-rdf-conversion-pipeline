@@ -1,3 +1,4 @@
+import os
 import pathlib
 import subprocess
 import tempfile
@@ -23,10 +24,12 @@ class LimesAlignmentEngine:
         :return:
         """
         limes_xml_config = generate_xml_config_from_limes_config(limes_config_params=limes_config_params)
-        temp_file = tempfile.NamedTemporaryFile()
-        temp_file.write(limes_xml_config.encode(encoding="utf-8"))
+        temp_file_name = None
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file.write(limes_xml_config.encode(encoding="utf-8"))
+            temp_file_name = temp_file.name
         self.execute_from_file_config(config_file_path=pathlib.Path(temp_file.name))
-        temp_file.close()
+        os.unlink(temp_file_name)
 
     def execute_from_file_config(self, config_file_path: pathlib.Path):
         """

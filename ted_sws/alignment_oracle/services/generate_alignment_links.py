@@ -1,3 +1,4 @@
+import os
 import pathlib
 import tempfile
 
@@ -57,9 +58,10 @@ def generate_alignment_links_for_notice(notice: Notice, sparql_endpoint: str,
     :return:
     """
     notice_rdf_manifestation = notice.distilled_rdf_manifestation.object_data
-    notice_rdf_file = tempfile.NamedTemporaryFile(suffix=".ttl")
-    notice_rdf_file.write(notice_rdf_manifestation.encode(encoding="utf-8"))
-    notice_rdf_file_path = notice_rdf_file.name
+    notice_rdf_file_path = None
+    with tempfile.NamedTemporaryFile(suffix=".ttl", delete=False) as notice_rdf_file:
+        notice_rdf_file.write(notice_rdf_manifestation.encode(encoding="utf-8"))
+        notice_rdf_file_path = notice_rdf_file.name
     with tempfile.TemporaryDirectory() as tmp_result_dir_path:
         limes_config_params = limes_config_generator(source_sparql_endpoint=notice_rdf_file_path,
                                                      target_sparql_endpoint=sparql_endpoint,
@@ -71,5 +73,5 @@ def generate_alignment_links_for_notice(notice: Notice, sparql_endpoint: str,
                                                           delta=delta,
                                                           use_caching=use_caching
                                                           )
-    notice_rdf_file.close()
+    os.unlink(notice_rdf_file_path)
     return result_alignment_links
