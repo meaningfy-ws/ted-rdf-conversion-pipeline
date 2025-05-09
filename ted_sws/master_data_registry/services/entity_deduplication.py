@@ -1,3 +1,4 @@
+import os
 import pathlib
 import tempfile
 from io import StringIO
@@ -34,9 +35,10 @@ def generate_mdr_alignment_links(merged_rdf_fragments: rdflib.Graph, cet_uri: st
     :param mdr_sparql_endpoint:
     :return:
     """
-    tmp_rdf_file = tempfile.NamedTemporaryFile(suffix=".ttl")
-    tmp_rdf_file.write(str(merged_rdf_fragments.serialize(format="turtle")).encode(encoding="utf-8"))
-    tmp_rdf_file_path = tmp_rdf_file.name
+    tmp_rdf_file_path = None
+    with tempfile.NamedTemporaryFile(suffix=".ttl", delete=False) as tmp_rdf_file:
+        tmp_rdf_file.write(str(merged_rdf_fragments.serialize(format="turtle")).encode(encoding="utf-8"))
+        tmp_rdf_file_path = tmp_rdf_file.name
     limes_config_generator = get_limes_config_generator_by_cet_uri(cet_uri=cet_uri)
     with tempfile.TemporaryDirectory() as tmp_result_dir_path:
         target_sparql_endpoint = mdr_sparql_endpoint if mdr_sparql_endpoint else tmp_rdf_file_path
@@ -49,7 +51,7 @@ def generate_mdr_alignment_links(merged_rdf_fragments: rdflib.Graph, cet_uri: st
             limes_config_params.target.data_type = TURTLE_SOURCE_DATA_TYPE
         alignment_links = generate_alignment_links(limes_config_params=limes_config_params, threshold=0.95,
                                                    use_caching=False)
-    tmp_rdf_file.close()
+    os.unlink(tmp_rdf_file_path)
     alignment_graph = rdflib.Graph()
     alignment_graph.parse(StringIO(alignment_links), format="nt")
     return alignment_graph
